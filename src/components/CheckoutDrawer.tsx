@@ -243,7 +243,8 @@ export function CheckoutDrawer({ intent, onClose }: CheckoutDrawerProps) {
 
       if (!response.ok || !data?.success || !data.checkoutRequestId || !data.sessionToken) {
         setErrorMsg(
-          data?.message ?? 'Unable to initiate M-Pesa payment right now. Please try again.'
+          data?.message ??
+            `Unable to initiate M-Pesa payment right now (HTTP ${response.status}). Please try again.`
         );
         return;
       }

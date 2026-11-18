@@ -1,8 +1,14 @@
-import {
-  verifyWebhookSignature,
-  type VercelRequest,
-  type VercelResponse,
-} from '../_lib/harakapaye';
+import crypto from 'node:crypto';
+import type { IncomingMessage, ServerResponse } from 'node:http';
+
+interface VercelRequest extends IncomingMessage {
+  body?: unknown;
+}
+
+interface VercelResponse extends ServerResponse {
+  status: (code: number) => VercelResponse;
+  json: (body: unknown) => void;
+}
 
 export const config = {
   api: {
@@ -22,6 +28,36 @@ async function readRawBody(req: VercelRequest): Promise<string> {
     chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
   }
   return Buffer.concat(chunks).toString('utf8');
+}
+
+function verifyWebhookSignature(
+  timestampHeader: string,
+  signatureHeader: string,
+  rawBody: string
+): boolean {
+  const signingSecret = (process.env.GATEWAY_SIGNING_SECRET || '').trim();
+  if (!signingSecret || !timestampHeader || !signatureHeader || !rawBody) {
+    return false;
+  }
+
+  const timestampSeconds = Number(timestampHeader);
+  if (
+    !Number.isFinite(timestampSeconds) ||
+    Math.abs(Date.now() / 1000 - timestampSeconds) > 300
+  ) {
+    return false;
+  }
+
+  const expected =
+    'sha256=' +
+    crypto
+      .createHmac('sha256', signingSecret)
+      .update(`${timestampHeader}.${rawBody}`, 'utf8')
+      .digest('hex');
+
+  const sigBuf = Buffer.from(signatureHeader);
+  const expectedBuf = Buffer.from(expected);
+  return sigBuf.length === expectedBuf.length && crypto.timingSafeEqual(sigBuf, expectedBuf);
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
