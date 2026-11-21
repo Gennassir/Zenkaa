@@ -19,7 +19,7 @@ interface ExtensionsSectionProps {
 }
 
 export function ExtensionsSection({ onExtendCheckout }: ExtensionsSectionProps) {
-  const [balance, setBalance] = useState(21000);
+  const [balance, setBalance] = useState(30000);
   const [selectedDays, setSelectedDays] = useState(7);
 
   const activeOption =
@@ -47,8 +47,8 @@ export function ExtensionsSection({ onExtendCheckout }: ExtensionsSectionProps) 
           <div className="lg:col-span-5">
             <div className="inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-[#FFD200] text-[#521878] mb-5 sm:mb-6 select-none">
               <div className="text-center leading-none">
-                <span className="block font-display text-lg sm:text-xl font-extrabold">
-                  61 DAY
+                <span className="block font-display text-base sm:text-lg font-extrabold">
+                  2 YEARS
                 </span>
                 <span className="block font-display text-[11px] sm:text-xs font-semibold tracking-wider text-[#141212] mt-0.5">
                   TERMS

@@ -2,28 +2,31 @@ import { ArrowRight } from 'lucide-react';
 import {
   LOAN_TIERS,
   QUICK_AMOUNTS,
-  TERM_OPTIONS,
+  TERM_MONTH_OPTIONS,
   formatKsh,
+  formatTermLabel,
   type LoanCalculation,
 } from '../data/zenkaData';
 import { ZenkaLogo } from './ZenkaLogo';
 
 interface HeroCalculatorProps {
   amount: number;
-  termDays: number;
+  termMonths: number;
   calculation: LoanCalculation;
   onAmountChange: (amount: number) => void;
-  onTermChange: (days: number) => void;
-  onApply: () => void;
+  onTermChange: (months: number) => void;
+  onApplyLoan: () => void;
+  onProceedToCheckout: () => void;
 }
 
 export function HeroCalculator({
   amount,
-  termDays,
+  termMonths,
   calculation,
   onAmountChange,
   onTermChange,
-  onApply,
+  onApplyLoan,
+  onProceedToCheckout,
 }: HeroCalculatorProps) {
   const sliderIndex = Math.max(
     0,
@@ -59,10 +62,10 @@ export function HeroCalculator({
               className="hidden sm:flex absolute bottom-7 right-7 flex-col items-end text-right pointer-events-none select-none"
             >
               <span className="font-display text-2xl font-extrabold leading-none text-[#521878]">
-                61 DAY
+                2 YEARS
               </span>
               <span className="font-display text-lg font-semibold leading-tight text-[#141212]">
-                TERMS
+                REPAY
               </span>
             </div>
 
@@ -77,26 +80,27 @@ export function HeroCalculator({
                   textWrap: 'balance',
                 }}
               >
-                Borrow up to <span className="text-[#FFD200]">KSh 70,000</span> with fees from KSh 99.
+                Borrow up to <span className="text-[#FFD200]">KSh 200,000</span> with 2 years repayment duration.
               </h1>
               <p className="text-sm sm:text-base text-white/80 leading-relaxed max-w-md mb-6 sm:mb-8">
-                Select your exact loan package, review the transparent flat fee upfront, and verify effortlessly with instant M-Pesa STK Push checkout.
+                Flexible repayment from 6 months up to 24 months (2 years). Check your CRB eligibility in seconds and settle transparently via M-Pesa STK Push.
               </p>
               <div className="flex flex-wrap items-center gap-4">
-                <a
-                  href="#packages"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-[#FFD200] hover:bg-[#F2C400] text-[#141212] text-sm font-bold transition-colors duration-150 whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FFD200] min-h-[44px]"
+                <button
+                  type="button"
+                  onClick={onApplyLoan}
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-[#FFD200] hover:bg-[#F2C400] text-[#141212] text-sm font-bold transition-colors duration-150 whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FFD200] min-h-[44px]"
                 >
-                  Explore Loan Packages
+                  Apply Loan Now
                   <ArrowRight className="w-4 h-4" />
-                </a>
+                </button>
               </div>
             </div>
 
             <div className="relative z-10 pt-6 sm:pt-8 mt-6 sm:mt-8 border-t border-white/15 flex flex-wrap items-center gap-x-4 sm:gap-x-5 gap-y-2 text-xs text-white/75 sm:pr-28">
               <span>Fixed flat fees</span>
               <span aria-hidden="true">·</span>
-              <span>14–61 day terms</span>
+              <span>6–24 month terms</span>
               <span aria-hidden="true">·</span>
               <span>Instant M-Pesa STK Push</span>
             </div>
@@ -170,7 +174,7 @@ export function HeroCalculator({
 
                 <div className="flex items-center justify-between text-xs text-[#5C5268] tabular-nums mt-1">
                   <span>KSh 10,000</span>
-                  <span>KSh 70,000</span>
+                  <span>KSh 200,000</span>
                 </div>
 
                 <div className="grid grid-cols-3 sm:flex sm:flex-wrap items-center gap-2 mt-4">
@@ -193,24 +197,28 @@ export function HeroCalculator({
 
               <div className="py-4 border-t border-[#E5E0EC]">
                 <div className="flex flex-wrap items-center justify-between gap-2 mb-2.5">
-                  <span className="text-sm font-medium text-[#5C5268]">Repayment duration</span>
+                  <span className="text-sm font-medium text-[#5C5268]">
+                    Repayment duration (6 months+)
+                  </span>
                   <span className="text-xs text-[#5C5268] tabular-nums">
-                    Due {calculation.dueDateFormatted}
+                    Maturity {calculation.dueDateFormatted}
                   </span>
                 </div>
                 <div className="grid grid-cols-3 gap-2 sm:gap-2.5">
-                  {TERM_OPTIONS.map((days) => (
+                  {TERM_MONTH_OPTIONS.map((months) => (
                     <button
-                      key={days}
+                      key={months}
                       type="button"
-                      onClick={() => onTermChange(days)}
+                      onClick={() => onTermChange(months)}
                       className={`py-2.5 px-1.5 sm:px-3 min-h-[44px] rounded-xl border text-center transition-colors duration-150 cursor-pointer whitespace-nowrap ${
-                        termDays === days
+                        termMonths === months
                           ? 'bg-[#521878] border-[#521878] text-white font-semibold'
                           : 'bg-[#FAF9FC] border-[#E5E0EC] text-[#1C1424] hover:border-[#521878]/50 font-medium'
                       }`}
                     >
-                      <span className="text-xs sm:text-sm tabular-nums">For {days} days</span>
+                      <span className="text-xs sm:text-sm tabular-nums">
+                        {formatTermLabel(months)}
+                      </span>
                     </button>
                   ))}
                 </div>
@@ -231,6 +239,12 @@ export function HeroCalculator({
                     {formatKsh(calculation.feeAmount, true)}
                   </dd>
                 </div>
+                <div className="flex items-center justify-between gap-4">
+                  <dt className="text-[#5C5268]">Estimated monthly installment</dt>
+                  <dd className="font-semibold text-[#1C1424] tabular-nums shrink-0">
+                    {formatKsh(calculation.monthlyInstallment, true)} / mo
+                  </dd>
+                </div>
                 <div className="flex items-center justify-between gap-4 pt-2.5 border-t border-[#E5E0EC]">
                   <dt className="font-semibold text-[#1C1424]">Total repayment at maturity</dt>
                   <dd className="font-display text-xl sm:text-2xl font-bold text-[#1C1424] tabular-nums shrink-0">
@@ -242,10 +256,10 @@ export function HeroCalculator({
 
             <button
               type="button"
-              onClick={onApply}
+              onClick={onProceedToCheckout}
               className="mt-4 w-full min-h-[48px] py-3.5 px-4 sm:px-6 rounded-full bg-[#521878] hover:bg-[#3B0F58] text-white text-xs sm:text-sm font-bold tracking-wide transition-colors duration-150 cursor-pointer sm:whitespace-nowrap focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#521878]"
             >
-              APPLY &amp; PAY FEE ({formatKsh(calculation.feeAmount)}) VIA M-PESA
+              APPLY LOAN &amp; CHECK CRB ({formatKsh(calculation.amount)})
             </button>
           </div>
         </div>
@@ -255,19 +269,19 @@ export function HeroCalculator({
           <div className="bg-white border border-[#E5E0EC] rounded-xl p-4 sm:p-5">
             <p className="text-xs text-[#5C5268] mb-1">Loan Tiers</p>
             <p className="font-display text-base sm:text-xl font-bold text-[#1C1424] tabular-nums">
-              KSh 10,000 – 70,000
+              KSh 10,000 – 200,000
             </p>
           </div>
           <div className="bg-white border border-[#E5E0EC] rounded-xl p-4 sm:p-5">
             <p className="text-xs text-[#5C5268] mb-1">Flexible Tenors</p>
             <p className="font-display text-base sm:text-xl font-bold text-[#1C1424] tabular-nums">
-              14 to 61 Days
+              6 to 24 Months
             </p>
           </div>
           <div className="bg-white border border-[#E5E0EC] rounded-xl p-4 sm:p-5">
             <p className="text-xs text-[#5C5268] mb-1">Fixed Package Fees</p>
             <p className="font-display text-base sm:text-xl font-bold text-[#521878] tabular-nums">
-              KSh 99 – 1,999
+              KSh 99 – 3,999
             </p>
           </div>
           <div className="bg-white border border-[#E5E0EC] rounded-xl p-4 sm:p-5">

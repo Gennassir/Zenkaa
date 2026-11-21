@@ -12,6 +12,7 @@ import {
 import {
   formatKsh,
   normalizeKenyanPhone,
+  type ApplicantProfile,
   type DrawerIntent,
 } from '../data/zenkaData';
 import { ZenkaLogo } from './ZenkaLogo';
@@ -36,10 +37,15 @@ type DrawerStep =
 
 interface CheckoutDrawerProps {
   intent: DrawerIntent | null;
+  applicantProfile?: ApplicantProfile | null;
   onClose: () => void;
 }
 
-export function CheckoutDrawer({ intent, onClose }: CheckoutDrawerProps) {
+export function CheckoutDrawer({
+  intent,
+  applicantProfile,
+  onClose,
+}: CheckoutDrawerProps) {
   const [step, setStep] = useState<DrawerStep>('details');
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
@@ -84,9 +90,14 @@ export function CheckoutDrawer({ intent, onClose }: CheckoutDrawerProps) {
       setSessionToken('');
       setMaskedPhone('');
       setSecondsRemaining(STK_TIMEOUT_SECONDS);
+      if (applicantProfile) {
+        if (applicantProfile.fullName) setFullName(applicantProfile.fullName);
+        if (applicantProfile.phone) setPhone(applicantProfile.phone);
+        if (applicantProfile.nationalId) setNationalId(applicantProfile.nationalId);
+      }
     }
     return () => clearTimers();
-  }, [intent]);
+  }, [intent, applicantProfile]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {

@@ -47,7 +47,7 @@ export function Header({ onApplyClick }: HeaderProps) {
             onClick={onApplyClick}
             className="hidden sm:inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold text-white bg-[#521878] hover:bg-[#3B0F58] rounded-full transition-colors duration-150 whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#521878]"
           >
-            Apply Now
+            Apply Loan Now
           </button>
 
           <button
@@ -84,7 +84,7 @@ export function Header({ onApplyClick }: HeaderProps) {
             }}
             className="w-full min-h-[44px] py-3 text-sm font-semibold text-white bg-[#521878] hover:bg-[#3B0F58] rounded-full transition-colors cursor-pointer"
           >
-            Apply Now
+            Apply Loan Now
           </button>
         </div>
       )}

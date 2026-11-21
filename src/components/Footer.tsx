@@ -18,7 +18,7 @@ export function Footer() {
               Packages &amp; Fees
             </a>
             <a href="#extensions" className="hover:text-[#FFD200] transition-colors py-1">
-              61-Day Extensions
+              Loan Extensions
             </a>
             <a href="#referrals" className="hover:text-[#FFD200] transition-colors py-1">
               Invite &amp; Earn
